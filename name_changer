@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+
+import os
+import discord
+from discord.ext import commands
+from discord import User
+
+# Discord constants
+CLIENT = discord.Client()
+TOKEN = os.environ['NAME_TOKEN']
+BOT = commands.Bot(command_prefix='.')
+
+
+# Bot specific variables
+games = []
+current_game = None     # Index of current game
+
+
+class AliasExistsError(Exception):
+    '''Exception thrown when an attempt is made to redefine an existing alias
+    while overwrite is set to False. This will be caught by the bot command
+    which can give an error message to the user.'''
+    pass
+
+
+class Game:
+    def __init__(self, name):
+        self.name = name
+        self.aliases = {}
+        self.active = False
+
+    def create_alias(self, user_id, alias, overwrite=False):
+        '''Takes in user_id and associates it with string alias.'''
+        if overwrite is False and user_id in self.aliases.keys():
+            raise AliasExistsError
+        self.aliases[user_id] = alias
+
+    def remove_alias(self, user_id):
+        self.aliases.pop(user_id, None)
+
+
+# def update():
+
+
+# Discord commands
+@BOT.command
+async def create(ctx, name):
+    '''Create a new Game and list of aliases'''
+    global current_game
+    new_game = Game(name)
+    games.append(new_game)
+    current_game = len(games) - 1
+    msg = '''New game "{name}" was created.
+    Add some nicknames with the .add command.'''
+    await ctx.send(msg)
+
+
+@BOT.command
+async def show(ctx):
+    msg = 'Games:\n'
+    for game in games:
+        line = f'{game.name}: {len(game.aliases)} nicknames'
+        if game.active:
+            line.join(' [ACTIVE]')
+        line.join('\n')
+        msg.join(line)
+    await ctx.send(msg)
+
+
+@BOT.command
+async def switch(ctx, other):
+    global current_game
+    global games
+    for idx, val in enumerate(games):
+        if val.name is other:
+            # set current to not active
+            games[current_game].active = False
+            # set the game we're switching into to active
+            val.active = True
+            current_game = idx
+            await ctx.send(f'Switched to Game: {val.name}')
+    await ctx.send('Game not found')
+
+
+# @BOT.command
+# async def assign(ctx, user: User, nickname):
