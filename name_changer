@@ -104,5 +104,10 @@ async def aliases(ctx):
     await ctx.send(msg)
 
 
+@BOT.command()
+async def nicknames(ctx):
+    aliases(ctx)
+
+
 if __name__ == '__main__':
     BOT.run(TOKEN)
