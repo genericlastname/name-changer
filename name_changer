@@ -50,20 +50,19 @@ async def create(ctx, name):
     new_game = Game(name)
     games.append(new_game)
     current_game = len(games) - 1
-    msg = '''New game "{name}" was created.
+    msg = f'''New game "{new_game.name}" was created.
     Add some nicknames with the .add command.'''
     await ctx.send(msg)
 
 
 @BOT.command()
 async def show(ctx):
-    msg = 'Games:\n'
+    msg = '__Games:__\n'
     for game in games:
-        line = f'{game.name}: {len(game.aliases)} nicknames'
+        msg += f'+ {game.name}: {len(game.aliases)} nicknames'
         if game.active:
-            line.join(' [ACTIVE]')
-        line.join('\n')
-        msg.join(line)
+            msg += ' [ACTIVE]'
+        msg += '\n'
     await ctx.send(msg)
 
 
