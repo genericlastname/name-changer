@@ -72,16 +72,13 @@ async def show(ctx):
 
 @BOT.command()
 async def switch(ctx, other):
-    global current_game
     global games
-    for idx, val in enumerate(games):
-        if val.name is other:
-            # set current to not active
-            games[current_game].active = False
-            # set the game we're switching into to active
-            val.active = True
-            current_game = idx
-            await ctx.send(f'Switched to Game: {val.name}')
+    clear_active()
+    for game in games:
+        if game.name == other:
+            game.active = True
+            await ctx.send(f'Switched to Game: __{game.name}__')
+            return
     await ctx.send('Game not found')
 
 
