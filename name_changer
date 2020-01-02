@@ -14,7 +14,6 @@ BOT = commands.Bot(command_prefix='.')
 
 # Bot specific variables
 games = []
-current_game = None     # Index of current game
 
 
 class Game:
@@ -39,7 +38,6 @@ def clear_active():
 @BOT.command()
 async def create(ctx, name):
     '''Create a new Game and list of aliases'''
-    global current_game
     new_game = Game(name)
     clear_active()
     new_game.active = True
