@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands
 from discord import Member
-from discord.ext.commands.errors import MissingRequiredArgument
+
 
 # Discord constants
 CLIENT = discord.Client()
@@ -12,8 +12,8 @@ TOKEN = os.environ['NAME_TOKEN']
 BOT = commands.Bot(command_prefix='.')
 
 
-# Bot specific variables
-games = []
+# Bot specific globals
+games_list = []
 
 
 class Game:
@@ -30,9 +30,11 @@ class Game:
         self.aliases.pop(member, None)
 
 
+# Helper functions
 def clear_active():
-    for game in games:
+    for game in games_list:
         game.active = False
+
 
 # Discord commands
 @BOT.command()
@@ -41,7 +43,7 @@ async def create(ctx, name):
     new_game = Game(name)
     clear_active()
     new_game.active = True
-    games.append(new_game)
+    games_list.append(new_game)
     msg = f'''New game "{new_game.name}" was created.
     Add some nicknames with the .add command.'''
     await ctx.send(msg)
@@ -50,7 +52,7 @@ async def create(ctx, name):
 @BOT.command()
 async def show(ctx):
     msg = '__Games:__\n'
-    for game in games:
+    for game in games_list:
         msg += f'+ {game.name}: {len(game.aliases)} nicknames'
         if game.active:
             msg += ' [ACTIVE]'
@@ -60,9 +62,9 @@ async def show(ctx):
 
 @BOT.command()
 async def switch(ctx, other):
-    global games
+    global games_list
     clear_active()
-    for game in games:
+    for game in games_list:
         if game.name == other:
             game.active = True
             # Update
@@ -75,8 +77,8 @@ async def switch(ctx, other):
 
 @BOT.command()
 async def add(ctx, member: Member, nickname):
-    global games
-    for game in games:
+    global games_list
+    for game in games_list:
         if game.active:
             game.create_alias(member, nickname)
             await member.edit(nick=game.aliases[member])
@@ -87,7 +89,7 @@ async def add(ctx, member: Member, nickname):
 @BOT.command()
 async def aliases(ctx):
     msg = '__Nicknames__'
-    for game in games:
+    for game in games_list:
         if game.active:
             for member in game.aliases:
                 msg += '@' + member.name[:8] + '... ~> ' + game.aliases[member]
