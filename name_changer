@@ -36,6 +36,16 @@ def clear_active():
         game.active = False
 
 
+def save_games():
+    with open('saved_games', 'w+') as f:
+        for game in games_list:
+            f.write('start ' + game.name + '\n')
+            for member in game.aliases:
+                # Use a hash character as a separator because it is not allowed
+                # in Discord usernames
+                f.write(member.name + '#' + game.aliases[member] + '\n')
+
+
 # Discord commands
 @BOT.command()
 async def create(ctx, name):
@@ -44,6 +54,7 @@ async def create(ctx, name):
     clear_active()
     new_game.active = True
     games_list.append(new_game)
+    save_games()
     msg = f'''New game "{new_game.name}" was created.
     Add some nicknames with the .add command.'''
     await ctx.send(msg)
@@ -86,6 +97,7 @@ async def add(ctx, member: Member, nickname):
     for game in games_list:
         if game.active:
             game.create_alias(member, nickname)
+            save_games()
             await member.edit(nick=game.aliases[member])
             await ctx.send(f'**{game.name}**: @{member.name[:8]}... ~> '
                            f'{game.aliases[member]}')
