@@ -41,6 +41,9 @@ class Game:
 
 # def update():
 
+def clear_active():
+    for game in games:
+        game.active = False
 
 # Discord commands
 @BOT.command()
@@ -48,8 +51,9 @@ async def create(ctx, name):
     '''Create a new Game and list of aliases'''
     global current_game
     new_game = Game(name)
+    clear_active()
+    new_game.active = True
     games.append(new_game)
-    current_game = len(games) - 1
     msg = f'''New game "{new_game.name}" was created.
     Add some nicknames with the .add command.'''
     await ctx.send(msg)
