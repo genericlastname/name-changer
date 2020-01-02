@@ -4,6 +4,7 @@ import os
 import discord
 from discord.ext import commands
 from discord import Member
+from discord.ext.commands.errors import MissingRequiredArgument
 
 # Discord constants
 CLIENT = discord.Client()
@@ -16,23 +17,14 @@ games = []
 current_game = None     # Index of current game
 
 
-class AliasExistsError(Exception):
-    '''Exception thrown when an attempt is made to redefine an existing alias
-    while overwrite is set to False. This will be caught by the bot command
-    which can give an error message to the user.'''
-    pass
-
-
 class Game:
     def __init__(self, name):
         self.name = name
         self.aliases = {}
         self.active = False
 
-    def create_alias(self, member, alias, overwrite=False):
+    def create_alias(self, member, alias):
         '''Takes in member and associates it with string alias.'''
-        if overwrite is False and member in self.aliases.keys():
-            raise AliasExistsError
         self.aliases[member] = alias
 
     def remove_alias(self, member):
