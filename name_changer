@@ -3,7 +3,7 @@
 import os
 import discord
 from discord.ext import commands
-from discord import User
+from discord import Member
 
 # Discord constants
 CLIENT = discord.Client()
@@ -29,17 +29,15 @@ class Game:
         self.aliases = {}
         self.active = False
 
-    def create_alias(self, user_id, alias, overwrite=False):
-        '''Takes in user_id and associates it with string alias.'''
-        if overwrite is False and user_id in self.aliases.keys():
+    def create_alias(self, member, alias, overwrite=False):
+        '''Takes in member and associates it with string alias.'''
+        if overwrite is False and member in self.aliases.keys():
             raise AliasExistsError
-        self.aliases[user_id] = alias
+        self.aliases[member] = alias
 
-    def remove_alias(self, user_id):
-        self.aliases.pop(user_id, None)
+    def remove_alias(self, member):
+        self.aliases.pop(member, None)
 
-
-# def update():
 
 def clear_active():
     for game in games:
@@ -77,13 +75,33 @@ async def switch(ctx, other):
     for game in games:
         if game.name == other:
             game.active = True
+            # Update
+            for member in game.aliases:
+                await member.edit(nick=game.aliases[member])
             await ctx.send(f'Switched to Game: __{game.name}__')
             return
     await ctx.send('Game not found')
 
 
-# @BOT.command()
-# async def assign(ctx, user: User, nickname):
+@BOT.command()
+async def add(ctx, member: Member, nickname):
+    global games
+    for game in games:
+        if game.active:
+            game.create_alias(member, nickname)
+            await member.edit(nick=game.aliases[member])
+            await ctx.send(f'**{game.name}**: @{member.name[:8]}... ~> '
+                           f'{game.aliases[member]}')
+
+
+@BOT.command()
+async def aliases(ctx):
+    msg = '__Nicknames__'
+    for game in games:
+        if game.active:
+            for member in game.aliases:
+                msg += '@' + member.name[:8] + '... ~> ' + game.aliases[member]
+    await ctx.send(msg)
 
 
 if __name__ == '__main__':
