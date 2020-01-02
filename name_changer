@@ -61,6 +61,11 @@ async def show(ctx):
 
 
 @BOT.command()
+async def games(ctx):
+    show(ctx)
+
+
+@BOT.command()
 async def switch(ctx, other):
     global games_list
     clear_active()
