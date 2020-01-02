@@ -87,4 +87,4 @@ async def switch(ctx, other):
 
 
 if __name__ == '__main__':
-    BOT.run(token)
+    BOT.run(TOKEN)
