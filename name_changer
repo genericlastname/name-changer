@@ -43,7 +43,7 @@ class Game:
 
 
 # Discord commands
-@BOT.command
+@BOT.command()
 async def create(ctx, name):
     '''Create a new Game and list of aliases'''
     global current_game
@@ -55,7 +55,7 @@ async def create(ctx, name):
     await ctx.send(msg)
 
 
-@BOT.command
+@BOT.command()
 async def show(ctx):
     msg = 'Games:\n'
     for game in games:
@@ -67,7 +67,7 @@ async def show(ctx):
     await ctx.send(msg)
 
 
-@BOT.command
+@BOT.command()
 async def switch(ctx, other):
     global current_game
     global games
@@ -82,7 +82,7 @@ async def switch(ctx, other):
     await ctx.send('Game not found')
 
 
-# @BOT.command
+# @BOT.command()
 # async def assign(ctx, user: User, nickname):
 
 
