@@ -84,3 +84,7 @@ async def switch(ctx, other):
 
 # @BOT.command
 # async def assign(ctx, user: User, nickname):
+
+
+if __name__ == '__main__':
+    BOT.run(token)
