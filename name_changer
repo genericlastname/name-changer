@@ -105,7 +105,7 @@ async def add(ctx, member: Member, nickname):
 
 @BOT.command()
 async def aliases(ctx):
-    msg = '__Nicknames__'
+    msg = '__Nicknames__\n'
     for game in games_list:
         if game.active:
             for member in game.aliases:
