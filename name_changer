@@ -110,6 +110,7 @@ async def aliases(ctx):
         if game.active:
             for member in game.aliases:
                 msg += '@' + member.name[:8] + '... ~> ' + game.aliases[member]
+                msg += '\n'
     await ctx.send(msg)
 
 
