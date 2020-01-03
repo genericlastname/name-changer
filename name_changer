@@ -87,7 +87,7 @@ async def create(ctx, name):
 
 
 @BOT.command()
-async def show(ctx):
+async def games(ctx):
     msg = '__Games:__\n'
     for game in games_list:
         msg += f'+ {game.name}: {len(game.aliases)} nicknames'
@@ -95,11 +95,6 @@ async def show(ctx):
             msg += ' [ACTIVE]'
         msg += '\n'
     await ctx.send(msg)
-
-
-@BOT.command()
-async def games(ctx):
-    show(ctx)
 
 
 @BOT.command()
@@ -130,7 +125,7 @@ async def add(ctx, member: Member, nickname):
 
 
 @BOT.command()
-async def aliases(ctx):
+async def names(ctx):
     msg = '__Nicknames__\n'
     for game in games_list:
         if game.active:
@@ -138,11 +133,6 @@ async def aliases(ctx):
                 msg += '@' + member.name[:8] + '... ~> ' + game.aliases[member]
                 msg += '\n'
     await ctx.send(msg)
-
-
-@BOT.command()
-async def nicknames(ctx):
-    aliases(ctx)
 
 
 if __name__ == '__main__':
