@@ -46,8 +46,10 @@ def save_games():
                 f.write(member.name + '#' + game.aliases[member] + '\n')
 
 
-def load_games():
+@BOT.event
+async def on_ready():
     global games_list
+    members = BOT.guilds[0].members
     try:
         with open('saved_games', 'r') as f:
             for line in f:
@@ -58,9 +60,16 @@ def load_games():
                     clear_active()
                     new_game.active = True
                     games_list.append(new_game)
+                else:
+                    idx = line.index('#')
+                    member_name = line[:idx]
+                    nickname = line[idx+1:-1]
+                    member = discord.utils.get(members, name=member_name)
+                    game = discord.utils.get(games_list, active=True)
+                    game.create_alias(member, nickname)
+        clear_active()
     except IOError:
         print('Save file not found')
-
 
 
 # Discord commands
@@ -137,5 +146,4 @@ async def nicknames(ctx):
 
 
 if __name__ == '__main__':
-    load_games()
     BOT.run(TOKEN)
